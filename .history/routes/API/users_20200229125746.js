@@ -4,7 +4,7 @@ const router = express.Router();
 //express validator for authentication
 const {
     check,
-    validationResult
+    calidationResult
 } = require('express-validator/check');
 
 //@route    POST api/posts
