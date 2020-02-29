@@ -4,8 +4,6 @@ const router = express.Router();
 const gravatar = require('gravatar');
 //bringing bcript for the password encryption
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-//to access the secret token from config
 const config = require('config');
 //express validator for authentication
 const {
@@ -104,30 +102,9 @@ router.post(
             await user.save();
             console.log('saved to database')
             //the response I will get in postmen after successfull registration
-            // res.send('User registered');
+            res.send('User registered');
             //return jsonwebtoken
-            //the payload, object with a user, 
-            const payload = {
-                user: {
-                    id: user.id
-                }
-            };
-            //sign the token,passing the payload and the secret
-            //expiration is optional
-            //in the callback we either get an error or the token
-            //if no error, we send the token back to the client
-            jwt.sign(
-                payload,
-                config.get('jwtSecret'), {
-                    expiresIn: 360000
-                },
-                (err, token) => {
-                    if (err) throw err;
-                    res.json({
-                        token
-                    });
-                }
-            );
+
 
         } catch (err) {
             console.log(err.message);
@@ -140,26 +117,18 @@ router.post(
 module.exports = router;
 
 //jwt token
-/*we want to return a Jason web token Once user registers
- so that way we can use that token to authenticate
+/*we want to return a Jason web token Once they register
+ so that they can use that token to authenticate
 and access protected routes.(from the client)
-The second part of the token is the payload
-That's the data that we want to send within the token (example the name of the user)
+The second partof the token is the payload
+That's the data that you want to send within the token (example the name of the user)
 what we want to send as the payload in our case is the I.D. the user's I.D. so that we can identify
 which user it is with the token.
 That way if we want to let's say update our profile we can easily look at that payload and see which
 user it is that's logged in and which user's profile we have to update.
 
-the way that this works is with the Jason Webb token package that we have installed,
-we need to first sign it and we pass in our payload back and then we can have a callback or we send a response
+the way that this works in with the Jason Webb token package that we have installed,
+we need to first sign it and we pass in our payload bay and then we can have a callback or we send a response
+
 back to the client with that token.
-
-And then later on, we need to protect our roots by creating a piece of middleware that will
-verify the token.
-
-So if we go down here we can call JWT dot verify with the token that sent in.
-
-It's going to get sent in through the HTTP headers and we can verify it and then either allow the user
-
-to access if it verifies or send back a response if says token is invalid.
 */
