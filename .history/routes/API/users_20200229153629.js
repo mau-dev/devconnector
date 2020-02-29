@@ -79,7 +79,7 @@ router.post(
                 //setting default immage if none
                 d: 'mm'
 
-            });
+            })
 
             //just creating a user instancce
             //for further saving to the db, call user.save()
@@ -101,8 +101,6 @@ router.post(
             //save the user to the db 
             await user.save();
             console.log('saved to database')
-            //the response I will get in postmen after successfull registration
-            res.send('User registered');
             //return jsonwebtoken
 
 

@@ -99,10 +99,8 @@ router.post(
             user.password = await bcrypt.hash(password, salt);
 
             //save the user to the db 
-            await user.save();
-            console.log('saved to database')
-            //the response I will get in postmen after successfull registration
-            res.send('User registered');
+            await user.save('User registred');
+
             //return jsonwebtoken
 
 

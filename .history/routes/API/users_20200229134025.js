@@ -2,18 +2,14 @@ const express = require('express');
 const router = express.Router();
 //bringing the gravatar package
 const gravatar = require('gravatar');
-//bringing bcript for the password encryption
-const bcrypt = require('bcryptjs');
-const config = require('config');
 //express validator for authentication
 const {
     check,
     validationResult
-} = require('express-validator');
-
+} = require('express-validator/check');
 
 //bringing the model for the user
-const User = require('../../models/User');
+const User = require('../../models/user');
 
 //@route    POST api/posts
 //@desc      register user
@@ -51,6 +47,7 @@ router.post(
             password
         } = req.body;
 
+
         try {
             //see if the user exists
             let user = await User.findOne({
@@ -58,14 +55,12 @@ router.post(
             });
 
             if (user) {
-                return res
-                    .status(400)
-                    .json({
-                        //to get the same type of errors on the client side
-                        errors: [{
-                            msg: 'User already exists'
-                        }]
-                    });
+                res.status(400).json({
+                    //to get the same type of errors on the client side
+                    errors: [{
+                        msg: 'User already exists'
+                    }]
+                });
             }
 
             //get users gravatar based on email
@@ -81,8 +76,6 @@ router.post(
 
             });
 
-            //just creating a user instancce
-            //for further saving to the db, call user.save()
             user = new User({
                 name,
                 email,
@@ -92,17 +85,6 @@ router.post(
 
             //encrypt password
 
-            //salt before encryption, with getting a promise from bcrypt.json
-            //put await before everything that returns a promise
-            const salt = await bcrypt.genSalt(10);
-            //hash the password, taking the plain password and the salt
-            user.password = await bcrypt.hash(password, salt);
-
-            //save the user to the db 
-            await user.save();
-            console.log('saved to database')
-            //the response I will get in postmen after successfull registration
-            res.send('User registered');
             //return jsonwebtoken
 
 
