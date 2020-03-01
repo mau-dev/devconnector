@@ -38,11 +38,8 @@ router.post(
         }
 
         try {
-            //take user model
             const user = await User.findById(req.user.id).select('-password');
 
-            //object for new post
-            //text comes from the body
             const newPost = new Post({
                 text: req.body.text,
                 name: user.name,
