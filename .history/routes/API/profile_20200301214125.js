@@ -409,27 +409,35 @@ router.put(
     }
 );
 
-// @route   DELETE api/profile/education/:edu_id
-// @desc    Delete education from profile
-// @access  Private
+
+// @route    DELETE api/profile/education /:edu_id
+// @desc     Delete education from profile
+// @access   Private
+
 router.delete('/education/:edu_id', auth, async (req, res) => {
     try {
+        //getting the profile by the user ID
+        //
         const profile = await Profile.findOne({
             user: req.user.id
         });
+        const removeIndex = profile.education.map(item => item.id).indexOf(req.params.edu_id);
 
-        // Get the remove index
-        const removeIndex = profile.education
-            .map(item => item.id)
-            .indexOf(req.params.edu_id);
         profile.education.splice(removeIndex, 1);
-        await profile.save();
+
+        await foundProfile.save();
+
+        //resavig the profile with the modified array
         res.json(profile);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    };
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            msg: 'Server error'
+        });
+    }
 });
+
 
 
 module.exports = router;
