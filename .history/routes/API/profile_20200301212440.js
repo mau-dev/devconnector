@@ -422,8 +422,7 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
 
         await foundProfile.save();
 
-        //resavig the profile with the modified array
-        res.json(profile);
+        rex.json(profile);
 
     } catch (error) {
         console.error(error);

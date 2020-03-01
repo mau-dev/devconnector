@@ -412,19 +412,15 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
         const profile = await Profile.findOne({
             user: req.user.id
         });
-        //get the remove index, to find the correct experience index to remove
-        //match the params to the item from the mapped array
+        //get remove index
         const removeIndex = profile.experience.map(item => item.id).indexOf(req.params.exp_id);
 
-        //take the profile we have as RemoveIndex, 
-        //splice the profile.experiences array by removing the removeIndex(the wanted index that matches the params)
         profile.experience.splice(removeIndex, 1);
 
         await foundProfile.save();
 
-        //resavig the profile with the modified array
-        res.json(profile);
-
+        rex.json(profile)
+        // return res.status(200).json(foundProfile);
     } catch (error) {
         console.error(error);
         return res.status(500).json({
