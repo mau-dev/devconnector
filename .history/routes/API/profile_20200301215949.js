@@ -1,5 +1,4 @@
 const express = require('express');
-//the request package for the github request
 const request = require('request');
 const config = require('config');
 const router = express.Router();
@@ -435,17 +434,9 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
 // @route   GET api/profile/github/:username
 // @desc    Get user repos from Github
 // @access  Public
-
-// take a GitHub username and make a request to our back end and 
-//then make a request to the get hub API to get the repositories of the user.
-//clientID and github secret are set in congig
-
 router.get('/github/:username', (req, res) => {
     try {
-        //construct an options object
-        //then plug it in the request package
         const options = {
-            //get the last 5 repos from the user 
             uri: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${config.get('githubClientId')}&client_secret=${config.get('githubSecret')}`,
             method: 'GET',
             headers: {

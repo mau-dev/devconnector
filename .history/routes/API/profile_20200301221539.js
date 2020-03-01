@@ -445,7 +445,6 @@ router.get('/github/:username', (req, res) => {
         //construct an options object
         //then plug it in the request package
         const options = {
-            //get the last 5 repos from the user 
             uri: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${config.get('githubClientId')}&client_secret=${config.get('githubSecret')}`,
             method: 'GET',
             headers: {
