@@ -5,7 +5,6 @@ const auth = require('../../middleware/auth');
 //bringing the user model
 const User = require('../../models/User');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const config = require('config');
 const {
     check,
@@ -38,12 +37,16 @@ router.get('/', auth, async (req, res) => {
 router.post(
     '/',
     [
-
+        check('name', 'Name is required')
+        .not()
+        .isEmpty(),
         check('email', 'Please include a valid email').isEmail(),
         check(
             'password',
-            'Password is required'
-        ).exists()
+            'Please enter a password with 6 or more characters'
+        ).isLength({
+            min: 6
+        })
 
     ],
     async (req, res) => {
@@ -57,6 +60,7 @@ router.post(
         }
         //pulling from request.body
         const {
+            name,
             email,
             password
         } = req.body;
@@ -66,40 +70,54 @@ router.post(
             let user = await User.findOne({
                 email
             });
-            //if there is not a user send errror
-            if (!user) {
+
+            if (user) {
                 return res
                     .status(400)
                     .json({
                         //to get the same type of errors on the client side
                         errors: [{
-                            msg: 'Invalid credentials'
+                            msg: 'User already exists'
                         }]
                     });
             }
 
-            //match the found user with the password
-            //byctiot has a method called compare which takes plain text password and encrypted password
-            //and tells if there is a match
-            //compare returns a promisse
+            //get users gravatar based on email
+            //passing the user's email into  a method to get it
+            const avatar = gravatar.url(email, {
+                //passing options
+                //size of the string up to 200 char
+                s: '200',
+                //passing raiting, set to PG (restrict inappropreate photos) 
+                r: 'pg',
+                //setting default immage if none
+                d: 'mm'
 
-            //takes password(the plain text password user enters on login) and the encrypted password from the database(user.oassword)
-            const isMatch = await bcrypt.compare(password, user.password);
+            });
 
-            //if not match return invalid credentials as well
-            if (!isMatch) {
-                return res
-                    .status(400)
-                    .json({
-                        //to get the same type of errors on the client side
-                        errors: [{
-                            msg: 'Invalid credentials'
-                        }]
-                    });
+            //just creating a user instancce
+            //for further saving to the db, call user.save()
+            user = new User({
+                name,
+                email,
+                avatar,
+                password
+            });
 
-            }
+            //encrypt password
 
+            //salt before encryption, with getting a promise from bcrypt.json
+            //put await before everything that returns a promise
+            const salt = await bcrypt.genSalt(10);
+            //hash the password, taking the plain password and the salt
+            user.password = await bcrypt.hash(password, salt);
 
+            //save the user to the db 
+            await user.save();
+            console.log('saved to database')
+            //the response I will get in postmen after successfull registration
+            // res.send('User registered');
+            //return jsonwebtoken
             //the payload, object with a user, 
             const payload = {
                 user: {
