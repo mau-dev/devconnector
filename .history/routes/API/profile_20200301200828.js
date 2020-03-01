@@ -174,7 +174,7 @@ router.get('/', async (req, res) => {
 
 
 // @route   GET api/profile/user/:user_id
-// @desc    Get profile by user ID (not profile id)
+// @desc    Get profile by user ID
 // @access  Public
 
 //since public no auth middleware needed
@@ -186,19 +186,13 @@ router.get('/user/:user_id', async (req, res) => {
             user: req.params.user_id
         }).populate('user', ['name', 'avatar']);
         if (!profile) return res.status(400).json({
-            msg: 'Profile not found'
+            msg: 'There is no profile for this user'
         });
 
         res.json(profile);
 
     } catch (err) {
         console.error(err.message);
-        if (err.kind == 'ObjectID') {
-            //if the id doesnt exist, return this insted the Server error msg
-            return res.status(400).json({
-                msg: 'Profile not found'
-            });
-        }
         res.status(500).send('Server error');
     }
 });

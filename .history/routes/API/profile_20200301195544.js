@@ -171,35 +171,4 @@ router.get('/', async (req, res) => {
     }
 });
 
-
-
-// @route   GET api/profile/user/:user_id
-// @desc    Get profile by user ID (not profile id)
-// @access  Public
-
-//since public no auth middleware needed
-router.get('/user/:user_id', async (req, res) => {
-    try {
-        //create var profile, by getting profile model with findOne method
-        //find by user, the id comes frm the URL params '/user/:user_id'
-        const profile = await Profile.findOne({
-            user: req.params.user_id
-        }).populate('user', ['name', 'avatar']);
-        if (!profile) return res.status(400).json({
-            msg: 'Profile not found'
-        });
-
-        res.json(profile);
-
-    } catch (err) {
-        console.error(err.message);
-        if (err.kind == 'ObjectID') {
-            //if the id doesnt exist, return this insted the Server error msg
-            return res.status(400).json({
-                msg: 'Profile not found'
-            });
-        }
-        res.status(500).send('Server error');
-    }
-});
 module.exports = router;
