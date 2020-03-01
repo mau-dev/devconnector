@@ -40,7 +40,6 @@ router.get('/me', auth, async (req, res) => {
     }
 });
 
-
 // @route   POST api/profile
 // @desc    Create or update user profile
 // @access  Private
@@ -111,7 +110,7 @@ router.post(
         //update and insert the profile in the detabase
         try {
             //taking the profile model, find by user id
-            let profile = await Profile.findOne({
+            let profile = Profile.findOne({
                 user: req.user.id
             });
             //if there is profile just update
@@ -149,7 +148,7 @@ router.post(
             res.status(500).send('Server error');
         }
 
-        // res.send('Hello');
+        res.send('Hello');
     }
 );
 

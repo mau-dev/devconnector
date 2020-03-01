@@ -13,7 +13,8 @@ const {
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 
-// @route   GET api/profile/me
+
+// @route   GET api/profile/me 
 // @desc    Get current users profile
 // @access  Private
 
@@ -40,7 +41,6 @@ router.get('/me', auth, async (req, res) => {
     }
 });
 
-
 // @route   POST api/profile
 // @desc    Create or update user profile
 // @access  Private
@@ -52,8 +52,12 @@ router.post(
         auth,
         [
             //validation middleware to check the required fields
-            check('status', 'Status is required').not().isEmpty(),
-            check('skills', 'Skills is required').not().isEmpty()
+            check('status', 'Status is required')
+            .not()
+            .isEmpty(),
+            check('skills', 'Skills is required')
+            .not()
+            .isEmpty(),
         ]
     ],
     async (req, res) => {
@@ -63,7 +67,6 @@ router.post(
                 errors: errors.array()
             });
         }
-        //pulling from req.body
         const {
             company,
             location,
@@ -79,25 +82,20 @@ router.post(
             facebook
         } = req.body;
 
-        //to check if all of the above were added before we try to submit to the db
-
         //build profile object
         const profileFields = {};
-        //this one pulling from user
         profileFields.user = req.user.id;
-        //adding each field
         if (company) profileFields.company = company;
         if (website) profileFields.website = website;
         if (location) profileFields.location = location;
         if (bio) profileFields.bio = bio;
-        if (status) profileFields.status = status;
+        if (status) profileFields.sttaus = status;
         if (githubusername) profileFields.githubusername = githubusername;
         if (skills) {
-            profileFields.skills = skills.split(',').map((skill) => skill.trim());
+            profileFields.skills = skills.split(',').map(skill => skill.trim());
         }
 
         //build social object, then do checks
-        //if we don't initialise like this will return undefined
         profileFields.social = {};
         if (youtube) profileFields.social.youtube = youtube;
         if (twitter) profileFields.social.twitter = twitter;
@@ -105,52 +103,11 @@ router.post(
         if (linkedin) profileFields.social.linkedin = linkedin;
         if (instagram) profileFields.social.instagram = instagram;
 
-        // console.log(profileFields.social.twitter);
+        console.log(profileFields.social.twitter);
 
-        //once we have the objects initialised
-        //update and insert the profile in the detabase
-        try {
-            //taking the profile model, find by user id
-            let profile = await Profile.findOne({
-                user: req.user.id
-            });
-            //if there is profile just update
-            if (profile) {
-                //update profile if exists
-                profile = await Profile.findOneAndUpdate(
-                    //find by user
-                    {
-                        user: req.user.id
-                    },
-                    //set the profile fields
-                    {
-                        $set: profileFields
-                    },
-                    //adding object with new set to true
-                    {
-                        new: true
-                    }
-                );
-                //return the entire updated profile
-                return res.json(profile);
-            }
-            //create
-            //if profile not found, create new  profile
-            //taking the same profile variable, setting to new profile instance, passing the profile fields
-            //profile instance created from the profile model
-            profile = new Profile(profileFields);
+        res.send('Hello');
 
-            //then save the profile
-            await profile.save();
-            //return profile
-            res.json(profile);
-        } catch (err) {
-            console.error(err.message);
-            res.status(500).send('Server error');
-        }
+    });
 
-        // res.send('Hello');
-    }
-);
 
 module.exports = router;

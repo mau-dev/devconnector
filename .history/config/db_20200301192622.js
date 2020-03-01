@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const config = require('config');
 const db = config.get('mongoURI');
 
-//to avoid mongoose DeprecationWarning
 mongoose.set('useFindAndModify', false);
 
 //connecting to mongodb, passing the db value, this is giving a promise 
