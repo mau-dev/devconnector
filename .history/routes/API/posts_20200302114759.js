@@ -246,8 +246,6 @@ router.post('/comment/:id', [auth, [
 // @route   DELETE api/posts/comment/:id/:comment_id
 // @desc    Delete a comment
 // @access  Private
-
-//to test the route, first add the post id followed by the comment id
 router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
     try {
         //get post by it's id
