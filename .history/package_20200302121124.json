@@ -6,8 +6,11 @@
 	"scripts": {
 		"start": "node server",
 		"server": "nodemon server",
+		// run npm start in the client folder
 		"client": "npm start --prefix client",
+		//running server and client scripts in same command
 		"dev": "concurrently \"npm run server\" \"npm run client\""
+
 	},
 	"author": "Maria",
 	"license": "MIT",
