@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 
 const Register = () => {
 {/*  formdata is the object state with field values, preset with the default values  */}
@@ -26,32 +26,6 @@ const Register = () => {
     if(password !== password2){
       console.log('Passwords do not match');
     } else {
-      {/* creating a new user object  */}
-      const newUser = {
-        name,
-        email,
-        password
-      }
-
-      try {
-       {/* since sending data, create a config object that has a headers object  */}
-       const config = {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-
-       }
-     {/* create the body to send (from the newUser object) */}
-     const body = JSON.stringify(newUser);
-     {/* axios will make a post request (to api/users) and return a promise, sending email password to the db and should return a token */}
-     const res = await axios.post('/api/users', body, config);
-     //get the response data (should be the token)
-     console.log(res.data)
-
-      } catch(err) {
-        console.error(err.response.data);
-
-      }
 
       console.log(formData);
       console.log('SUCCESS!!');
